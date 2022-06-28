@@ -1,5 +1,11 @@
+#创建工作空间
+mkdir -p ~/catkin_ws/src
+cd catkin_ws && catkin_make
+#下载lego-loam代码
+cd ~/catkin_ws/src && git clone https://github.com/98huan/LeGO-LOAM.git
+
 #安装gtsam
-# ctrl + alt + T 打开终端(以下命令都在这个终端执行)
+# ctrl + alt + T 打开终端(安装gtsam的命令都在这个终端执行)
 wget -O gtsam.zip https://github.com/borglab/gtsam/archive/4.0.0-alpha2.zip
 unzip gtsam.zip
 cd gtsam-4.0.0-alpha2/
@@ -20,7 +26,7 @@ sudo touch octomap_server.launch
 sudo chmod a+w octomap_server.launch
 #打开这个launch文件
 sudo gedit octomap_server.launch
-#将下面内容复制到打开的空的launch文件中
+#将下面内容复制到打开的launch文件中
 <launch>
   <node pkg="octomap_server" type="octomap_server_node" name="octomap_server"> 
  
@@ -48,15 +54,18 @@ sudo gedit octomap_server.launch
 </launch>
 
 
-
-#安装地图保存的插件
+#安装保存地图的插件
 sudo apt-get install ros-melodic-map-server
 
+#编译lego-loam
+cd catkin_ws && catkin_make -j1
+
+#运行指令：
 //启动octomap_server节点
 roslaunch octomap_server octomap_server.launch
-//启动雷达
+//启动雷达(记得要在工作空间下source一下)
 roslaunch lslidar_c16_decoder lslidar_c16.launch
-//启动lego-loam建图
+//启动lego-loam建图(记得要在工作空间下source一下)
 roslaunch lego_loam run.launch
-//保存地图
+//保存地图（会在home文件夹下生成mymap.png和mymap.yaml）
 rosrun map_server map_saver map:=/projected_map -f /home/ttzn/mymap
