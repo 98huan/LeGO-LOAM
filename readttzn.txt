@@ -1,0 +1,62 @@
+#安装gtsam
+# ctrl + alt + T 打开终端(以下命令都在这个终端执行)
+wget -O gtsam.zip https://github.com/borglab/gtsam/archive/4.0.0-alpha2.zip
+unzip gtsam.zip
+cd gtsam-4.0.0-alpha2/
+mkdir build && cd build
+cmake ..
+sudo make install
+
+#安装octomap
+sudo apt-get install ros-melodic-octomap-ros
+sudo apt-get install ros-melodic-octomap-server
+#安装octomap在rviz中的插件
+sudo apt-get install ros-melodic-octomap-rviz-plugins
+#进入octomap_server的launch文件夹
+cd /opt/ros/melodic/share/octomap_server/launch
+#创建launch文件
+sudo touch octomap_server.launch
+#给launch文件加可写权限
+sudo chmod a+w octomap_server.launch
+#打开这个launch文件
+sudo gedit octomap_server.launch
+#将下面内容复制到打开的空的launch文件中
+<launch>
+  <node pkg="octomap_server" type="octomap_server_node" name="octomap_server"> 
+ 
+     <!--resolution in meters per pixel-->
+    <param name="resulution" value="0.1" />
+    
+     <!--name of the fixed frame,needs to be "/map" for SLAM-->
+    <param name="frame_id" type="string" value="/camera_init" />
+ 
+     <!--max range/depth resolution of the kinect meters-->
+    <param name="sensor_model/max_range" value="50.0" />
+    <param name="latch" value="true" />
+ 
+     <!--max/min height for occupancy map, should be in meters-->
+    <param name="pointcloud_max_z" value="1.6" />
+    <param name="pointcloud_min_z" value="0.8" />
+ 
+    <param name="graound_filter_angle" value="3.14" />
+ 
+     <!--topic from where pointcloud2 messages are subscribed-->
+    <remap from="/cloud_in" to="/registered_cloud" />
+ 
+  </node>
+ 
+</launch>
+
+
+
+#安装地图保存的插件
+sudo apt-get install ros-melodic-map-server
+
+//启动octomap_server节点
+roslaunch octomap_server octomap_server.launch
+//启动雷达
+roslaunch lslidar_c16_decoder lslidar_c16.launch
+//启动lego-loam建图
+roslaunch lego_loam run.launch
+//保存地图
+rosrun map_server map_saver map:=/projected_map -f /home/ttzn/mymap

@@ -10,8 +10,8 @@
 
 #include "cloud_msgs/cloud_info.h"
 
-#include <opencv2/imgproc.hpp>
-// #include <opencv/cv.h>
+// #include <opencv/cv.h>   //替换成下面的头文件，找到对应路径下的imgproc.hpp
+#include </usr/include/opencv4/opencv2/imgproc/imgproc.hpp>
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -51,30 +51,16 @@ using namespace std;
 
 typedef pcl::PointXYZI  PointType;
 
-// extern const string pointCloudTopic = "/velodyne_points";
-
 extern const string pointCloudTopic = "/lslidar_point_cloud";
-extern const string imuTopic = "/imu/data";     //没有
-
+extern const string imuTopic = "/imu/data";
 
 // Save pcd
 extern const string fileDirectory = "/tmp/";
 
 // Using velodyne cloud "ring" channel for image projection (other lidar may have different name for this channel, change "PointXYZIR" below)
-// extern const bool useCloudRing = true; // if true, ang_res_y and ang_bottom are not used
 extern const bool useCloudRing = false; // if true, ang_res_y and ang_bottom are not used
 
-
-
 // VLP-16
-// extern const int N_SCAN = 16;
-// extern const int Horizon_SCAN = 1800;
-// extern const float ang_res_x = 0.2;
-// extern const float ang_res_y = 2.0;
-// extern const float ang_bottom = 15.0+0.1;
-// extern const int groundScanInd = 7;
-
-//雷神智能 
 extern const int N_SCAN = 16;
 extern const int Horizon_SCAN = 1800;
 extern const float ang_res_x = 0.2;
